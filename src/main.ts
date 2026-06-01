@@ -9,7 +9,17 @@ async function bootstrap() {
 
   // Enable CORS for frontend access
   app.enableCors({
-    origin: ['http://localhost:3001', 'http://127.0.0.1:3001', 'http://192.168.110.119:3001', 'http://192.168.110.94:3001'],
+    origin: [
+      'http://localhost:3001',
+      'http://127.0.0.1:3001',
+      'http://192.168.110.119:3001',
+      'http://192.168.110.94:3001',
+      'http://124.222.144.78',
+      'http://124.222.144.78:3001',
+      'http://124.222.144.78:3002',
+      'https://szzongjing.com',
+      'https://www.szzongjing.com',
+    ],
     credentials: true,
   });
 
@@ -20,6 +30,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
     whitelist: true,
+    forbidNonWhitelisted: true,
   }));
 
   await app.listen(process.env.PORT ?? 3000);
