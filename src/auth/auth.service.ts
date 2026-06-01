@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -80,7 +80,7 @@ export class AuthService implements OnModuleInit {
   async login(username: string, password: string) {
     const user = await this.validateUser(username, password);
     if (!user) {
-      return { code: 401, message: 'Invalid credentials' };
+      throw new UnauthorizedException({ code: 401, message: 'Invalid credentials' });
     }
     const payload = { username: user.username, sub: user.id, role: user.role };
     return {

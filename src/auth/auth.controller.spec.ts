@@ -71,7 +71,7 @@ describe('AuthController (e2e)', () => {
       // admin user already exists via onModuleInit seed
       const response = await request(app.getHttpServer())
         .post('/auth/login')
-        .send({ username: 'admin', password: 'wrong' })
+        .send({ username: 'admin', password: 'wrongpassword' })
         .expect(401);
       expect(response.body.code).toBe(401);
     });
