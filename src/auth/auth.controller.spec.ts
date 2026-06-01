@@ -3,7 +3,6 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../app.module';
 import { DataSource } from 'typeorm';
-import { User } from '../database/entities';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
@@ -31,10 +30,9 @@ describe('AuthController (e2e)', () => {
     await app.close();
   });
 
-  beforeEach(async () => {
-    // 清空 users 表
-    await dataSource.getRepository(User).clear();
-  });
+  // Note: no beforeEach clear — onModuleInit seeds the admin user,
+  // and tests #5/#6 rely on that user existing. Tests #1-#4 (validation)
+  // don't touch the user table.
 
   describe('POST /auth/login', () => {
     it('should return 400 when body is empty', async () => {
@@ -70,12 +68,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it('should return 401 with valid format but wrong credentials', async () => {
-      // 触发默认用户创建
-      await request(app.getHttpServer())
-        .post('/auth/login')
-        .send({ username: 'admin', password: 'admin123' })
-        .expect(200);
-
+      // admin user already exists via onModuleInit seed
       const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send({ username: 'admin', password: 'wrong' })
