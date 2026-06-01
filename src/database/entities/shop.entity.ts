@@ -27,6 +27,12 @@ export class Shop {
   @Column({ name: 'image', nullable: true })
   image: string;
 
+  @Column({ name: 'business_recommendation', length: 500, nullable: true })
+  businessRecommendation: string;
+
+  @Column({ name: 'engineering_conditions', length: 500, nullable: true })
+  engineeringConditions: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

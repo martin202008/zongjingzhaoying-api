@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThan } from 'typeorm';
 import { Lead } from '../database/entities';
+import { FollowRecord } from '../database/entities';
 
 @Injectable()
 export class LeadService {
   constructor(
     @InjectRepository(Lead)
     private leadRepository: Repository<Lead>,
+    @InjectRepository(FollowRecord)
+    private followRepository: Repository<FollowRecord>,
   ) {}
 
   async findAll(filters?: { status?: string; projectId?: number; assignedTo?: number; stage?: string }): Promise<Lead[]> {
@@ -96,5 +99,17 @@ export class LeadService {
       this.leadRepository.count(),
     ]);
     return { new: newLeads, contacted, visit, negotiation, signed, lost, total };
+  }
+
+  async remove(id: number): Promise<{ success: boolean; message: string }> {
+    const lead = await this.leadRepository.findOne({ where: { id } });
+    if (!lead) {
+      return { success: false, message: '线索不存在' };
+    }
+    // 先删除关联的跟进记录
+    await this.followRepository.delete({ leadId: id });
+    // 再删除线索
+    await this.leadRepository.delete(id);
+    return { success: true, message: '删除成功' };
   }
 }

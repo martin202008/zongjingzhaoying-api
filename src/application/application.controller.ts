@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe } from '@nestjs/common';
 import { ApplicationService } from './application.service';
 
 @Controller('applications')
@@ -18,5 +18,10 @@ export class ApplicationController {
   @Put(':id')
   async update(@Param('id', ParseIntPipe) id: number, @Body() data: { status?: string; remark?: string }) {
     return this.applicationService.update(id, data);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return this.applicationService.remove(id);
   }
 }

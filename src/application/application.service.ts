@@ -34,4 +34,13 @@ export class ApplicationService {
     });
     return this.applicationRepository.findOne({ where: { id } });
   }
+
+  async remove(id: number): Promise<{ success: boolean; message: string }> {
+    const application = await this.applicationRepository.findOne({ where: { id } });
+    if (!application) {
+      return { success: false, message: '入驻申请不存在' };
+    }
+    await this.applicationRepository.delete(id);
+    return { success: true, message: '删除成功' };
+  }
 }

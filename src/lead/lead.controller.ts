@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
 import { LeadService } from './lead.service';
 
 @Controller('leads')
@@ -54,5 +54,10 @@ export class LeadController {
   async updateStage(@Param('id', ParseIntPipe) id: number, @Body() body: { stage: string; next_follow_time?: string }) {
     const nextFollowTime = body.next_follow_time ? new Date(body.next_follow_time) : undefined;
     return this.leadService.updateStage(id, body.stage, nextFollowTime);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return this.leadService.remove(id);
   }
 }
